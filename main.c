@@ -1,8 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
+typedef struct Film {
+    char* title;
+    int year;
+    char* origin;
+    char* genre;
+    float rating;
+} Film;
+
 typedef struct Node {
-    int value;
+    Film value;
     struct Node *next;
     struct Node *prev;
 } Node;
@@ -20,7 +29,7 @@ DblLinkedList* createDblLinkedList() {
     return tmp;
 }
 
-void push(DblLinkedList *list, int data) {
+void push(DblLinkedList *list, Film data) {
     Node *tmp = (Node*) malloc(sizeof(Node));
     if (tmp == NULL) {
         exit(1);
@@ -40,9 +49,9 @@ void push(DblLinkedList *list, int data) {
 }
 
 
-int pop(DblLinkedList *list) {
+Film pop(DblLinkedList *list) {
     Node *prev;
-    int tmp;
+    Film tmp;
     if (list->head == NULL) {
         exit(2);
     }
@@ -61,7 +70,7 @@ int pop(DblLinkedList *list) {
     return tmp;
 }
 
-void pushBack(DblLinkedList *list, int value) {
+void pushBack(DblLinkedList *list, Film value) {
     Node *tmp = (Node*) malloc(sizeof(Node));
     if (tmp == NULL) {
         exit(3);
@@ -80,9 +89,9 @@ void pushBack(DblLinkedList *list, int value) {
     list->size++;
 }
 
-int popBack(DblLinkedList *list) {
+Film popBack(DblLinkedList *list) {
     Node *next;
-    int tmp;
+    Film tmp;
     if (list->tail == NULL) {
         exit(4);
     }
@@ -108,21 +117,5 @@ void circleList (DblLinkedList* list) {
 }
 
 int main() {
-    DblLinkedList* list = createDblLinkedList();
-    push(list, 5);
-    push(list, 10);
-    push(list, 15);
-    circleList(list);
-    printf("Size %d, data %d\n", list->size, list->head->next->value);
-    printf("Size %d, data %d\n", list->size, list->head->next->next->value);
-    printf("Size %d, data %d\n", list->size, list->head->next->next->next->value);
-    int n = pop(list);
-    printf("%d", n);
-    printf("Size %d, data %d\n", list->size, list->head->next->next->value);
-    pushBack(list, 7);
-    printf("Size %d, data %d\n", list->size, list->tail->value);
-    n = popBack(list);
-    printf("%d %d", n, list->size);
-
     return 0;
 }
