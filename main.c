@@ -1,13 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <locale.h>
+#include <windows.h>
 
 
 typedef struct Film {
-    char* title;
-    int year;
-    char* origin;
-    char* genre;
-    float rating;
+    wchar_t* title;
+    wchar_t* year;
+    wchar_t* origin;
+    wchar_t* genre;
+    wchar_t* rating;
 } Film;
 
 typedef struct Node {
@@ -111,11 +114,67 @@ Film popBack(DblLinkedList *list) {
     return tmp;
 }
 
+Film* filmInit() {
+    Film* film = (Film*)malloc(sizeof(Film));
+    film->title = (wchar_t*)malloc(sizeof(wchar_t)*100);
+    film->year = (wchar_t*)malloc(sizeof(wchar_t)*100);
+    film->origin = (wchar_t*)malloc(sizeof(wchar_t)*100);
+    film->genre = (wchar_t*)malloc(sizeof(wchar_t)*100);
+    film->rating = (wchar_t*)malloc(sizeof(wchar_t)*100);
+    return film;
+}
+
+Film* getFilm(FILE* films) {
+    Film* film = filmInit();
+    if (fgetws(film->title, 100,films) != NULL) {
+
+        fgetws(film->year, 100,films);
+
+        fgetws(film->origin, 100,films);
+
+        fgetws(film->genre, 100,films);
+
+        fgetws(film->rating, 100,films);
+
+    } else {
+        //printf("Ne prokanaklo)");
+        return NULL;
+    }
+    return film;
+}
+
+DblLinkedList* getFilms() {
+
+    FILE* films = fopen("films.txt", "r");
+    DblLinkedList* filmsList = createDblLinkedList();
+
+    Film* film = getFilm(films);
+
+    while(film != NULL) {
+        push(filmsList, *film);
+        //printf("Added %ls", film->year);
+        film = getFilm(films);
+    }
+    return filmsList;
+}
+
 void circleList (DblLinkedList* list) {
     list->tail->next = list->head;
     list->head->prev = list->tail;
 }
 
+void printFilm(Film* film) {
+    printf("Title: %ls", film->title);
+    printf("Year: %ls", film->year);
+    printf("Origin: %ls", film->origin);
+    printf("Genre: %ls", film->genre);
+    printf("Rating: %ls", film->rating);
+}
+
 int main() {
-    return 0;
+    SetConsoleOutputCP(CP_UTF8);
+    DblLinkedList* films = getFilms();
+    printf("%d", films->size);
+    circleList(films);
+    printFilm(&films->head->value);
 }
